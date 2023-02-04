@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import * as puppeteer from 'puppeteer';
+import { chromium, devices } from 'playwright';
 import { isUrlAbsolute } from '../../utils/isAbsoluteUrl';
 import { Status } from '../helpers/constants';
 
@@ -119,23 +119,11 @@ const parseNovelAndChapters = async novelUrl => {
 const parseChapter = async (novelUrl, chapterUrl) => {
   const url = chapterUrl;
   
-  const browser = await puppeteer.launch({
-    headless: true,
-    defaultViewport: null,
-  });
+  const browser = await playwright.chromium.launch();
   const page = await browser.newPage();
   
-  await page.goto(url, {
-    waitUntil: "domcontentloaded",
-  });
-  
-  const pagedata = await page.evaluate(() => {
-  const readerarea = document.querySelector('#reading-content');
-    
-  let chapterText = quote.querySelectorAll('p').innerText;
-  
-  return { chapterText };
-  });
+  await page.goto(url);
+  let chapterText = await page.querySelector('#reading-content').innerText;
     
   const result = await fetch(url);
   const body = await result.text();
