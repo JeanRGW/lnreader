@@ -33,6 +33,7 @@
     "cheerio": "^1.0.0-rc.10",
     "color": "^4.2.3",
     "dayjs": "^1.11.4",
+    "events": "^3.3.0",
     "expo": "^41.0.1",
     "expo-document-picker": "^9.2.4",
     "expo-file-system": "~11.0.2",
