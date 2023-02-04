@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import puppeteer from "puppeteer";
+import * as puppeteer from 'puppeteer';
 import { isUrlAbsolute } from '../../utils/isAbsoluteUrl';
 import { Status } from '../helpers/constants';
 
