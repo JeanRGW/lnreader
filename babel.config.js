@@ -21,7 +21,7 @@ module.exports = function (api) {
         },
       ],
       'react-native-reanimated/plugin',
-      'playwright',
+      'module:playwright',
     ],
   };
 };
