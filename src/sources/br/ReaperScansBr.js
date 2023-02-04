@@ -1,14 +1,16 @@
 import * as cheerio from 'cheerio';
+import puppeteer from "puppeteer";
+import { isUrlAbsolute } from '../../utils/isAbsoluteUrl';
 import { Status } from '../helpers/constants';
 
-const baseUrl = 'https://reaperscans.com.br/';
+const baseUrl = 'https://reaperscans.net/';
 
 const sourceId = 79;
 const sourceName = 'ReaperScans (Br)';
 
 const popularNovels = async page => {
   let url =
-    baseUrl + '/all-series/todas-as-series/page/' + page + '/?m_orderby=rating';
+    baseUrl + '/home';
 
   const totalPages = 1;
 
@@ -19,17 +21,20 @@ const popularNovels = async page => {
 
   let novels = [];
 
-  loadedCheerio('.page-item-detail').each(function () {
+  loadedCheerio('.main-novels > div > div > div:nth-child(2) > div > div').each(function () {
+    let novelUrl = loadedCheerio(this).find('.c-hCLgme > a').attr('href');
+    if (novelUrl && !isUrlAbsolute(novelUrl)) {
+    novelUrl = baseUrl + novelUrl;
+    }
+    
     const novelName = loadedCheerio(this)
-      .find('.item-summary h3')
+      .find('h5')
       .text()
       .trim();
     const novelCover = loadedCheerio(this)
-      .find('.img-responsive')
-      .attr('data-src');
-
-    let novelUrl = loadedCheerio(this).find('div > a').attr('href');
-
+      .find('img')
+      .attr('src');
+    
     const novel = {
       sourceId,
       novelName,
@@ -58,13 +63,11 @@ const parseNovelAndChapters = async novelUrl => {
     novelUrl,
   };
 
-  loadedCheerio('.post-title > h3 > span').remove();
-
   novel.novelUrl = novelUrl;
 
-  novel.novelName = loadedCheerio('.post-title > h1').text().trim();
+  novel.novelName = loadedCheerio('.series-main > div.bg.container.relative > div > div.lg\\:col-span-9.col-span-1 > div.series-title > h1').text().trim();
 
-  novel.novelCover = loadedCheerio('.summary_image > a > img').attr('data-src');
+  novel.novelCover = loadedCheerio('.series-main img').attr('src');
 
   loadedCheerio('.post-content_item').each(function () {
     const detailName = loadedCheerio(this)
@@ -88,22 +91,20 @@ const parseNovelAndChapters = async novelUrl => {
     }
   });
 
-  loadedCheerio('.description-summary > div.summary__content')
-    .find('em')
-    .remove();
-  loadedCheerio('.premium-block').remove();
-
-  novel.summary = loadedCheerio('div.summary__content').text().trim();
+  novel.summary = loadedCheerio('.description-container > p').text().trim();
 
   let novelChapters = [];
 
-  loadedCheerio('.wp-manga-chapter').each(function () {
+  loadedCheerio('#simple-tabpanel-0 > div > span > div > ul > a').each(function () {
     loadedCheerio('i').remove();
 
-    const chapterName = loadedCheerio(this).find('a').text().trim();
-    const releaseDate = null;
+    const chapterName = loadedCheerio(this).find('span').text().trim();
+    const releaseDate = loadedCheerio(this).find('p').text().trim();
 
-    const chapterUrl = loadedCheerio(this).find('a').attr('href');
+    let chapterUrl = loadedCheerio(this).attr('href');
+    if (chapterUrl && !isUrlAbsolute(chapterUrl)) {
+    chapterUrl = baseUrl + chapterUrl;
+    }
 
     const chapter = { chapterName, releaseDate, chapterUrl };
 
@@ -117,14 +118,32 @@ const parseNovelAndChapters = async novelUrl => {
 
 const parseChapter = async (novelUrl, chapterUrl) => {
   const url = chapterUrl;
-
+  
+  const browser = await puppeteer.launch({
+    headless: true,
+    defaultViewport: null,
+  });
+  const page = await browser.newPage();
+  
+  await page.goto(url, {
+    waitUntil: "domcontentloaded",
+  });
+  
+  const pagedata = await page.evaluate(() => {
+  const readerarea = document.querySelector('#reading-content');
+    
+  let chapterText = quote.querySelectorAll('p').innerText;
+  
+  return { chapterText };
+  });
+    
   const result = await fetch(url);
   const body = await result.text();
 
   let loadedCheerio = cheerio.load(body);
 
   const chapterName = loadedCheerio('#chapter-heading').text();
-  let chapterText = loadedCheerio('.reading-content').html();
+  //let chapterText = loadedCheerio('.reading-content').html();
   const chapter = {
     sourceId,
     novelUrl,
