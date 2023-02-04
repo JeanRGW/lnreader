@@ -48,7 +48,7 @@
     "i18n-js": "^3.8.0",
     "lodash": "^4.17.21",
     "lottie-react-native": "^5.1.4",
-    "playwright": "1.30.0",
+    "playwright": "1.29.2",
     "prop-types": "^15.7.2",
     "qs": "^6.10.3",
     "react": "16.13.1",
