@@ -1,5 +1,5 @@
-import * as cheerio from 'cheerio';
 import { chromium, devices } from 'playwright';
+import * as cheerio from 'cheerio';
 import { isUrlAbsolute } from '../../utils/isAbsoluteUrl';
 import { Status } from '../helpers/constants';
 
