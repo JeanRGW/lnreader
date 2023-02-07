@@ -8,4 +8,7 @@ module.exports = {
     }),
     plugins: ['@babel/plugin-proposal-numeric-separator'],
   },
+  resolver: {
+    sourceExts: ['jsx', 'js', 'ts', 'tsx', 'cjs', 'json'] //add here
+  },
 }
