@@ -14,7 +14,7 @@
     "source:generator": "node scripts/generateSource.cjs",
     "strings": "node scripts/stringTypes.cjs",
     "prepare": "husky install",
-    "postinstall": "node_modules/.bin/rn-nodeify --install fs, https --hack"
+    "postinstall": "node_modules/.bin/rn-nodeify --install fs --hack"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.4.5",
@@ -46,6 +46,7 @@
     "expo-notifications": "~0.11.6",
     "expo-sqlite": "~9.1.0",
     "expo-web-browser": "~9.1.0",
+    "https": "^1.0.0",
     "i18n-js": "^3.8.0",
     "lodash": "^4.17.21",
     "lottie-react-native": "^5.1.4",
