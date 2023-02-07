@@ -128,8 +128,10 @@ const parseChapter = async (novelUrl, chapterUrl) => {
   driver.findElement(By.id('reading-content').then(function(element){
     element.getText().then(function(chapterText){
       console.log(chapterText);
+      return chapterText,
        });
     });
+);
     
   const result = await fetch(url);
   const body = await result.text();
