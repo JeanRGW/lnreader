@@ -1,5 +1,5 @@
-import { chromium, devices } from 'playwright';
 import * as cheerio from 'cheerio';
+import * from 'selenium-webdriver';
 import { isUrlAbsolute } from '../../utils/isAbsoluteUrl';
 import { Status } from '../helpers/constants';
 
@@ -119,11 +119,17 @@ const parseNovelAndChapters = async novelUrl => {
 const parseChapter = async (novelUrl, chapterUrl) => {
   const url = chapterUrl;
   
-  const browser = await playwright.chromium.launch();
-  const page = await browser.newPage();
+  var webdriver = require ('selenium-webdriver'),
+      By = webdriver.By;
+  var driver = new webdriver.Builder()
+  .forBrowser('PhantomJS')
+  .build();
   
-  await page.goto(url);
-  let chapterText = await page.querySelector('#reading-content').innerText;
+  driver.findElement(By.id('reading-content').then(function(element){
+    element.getText().then(function(chapterText){
+      console.log(chapterText);
+       });
+    });
     
   const result = await fetch(url);
   const body = await result.text();
