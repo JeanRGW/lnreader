@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import * from 'selenium-webdriver';
+import 'selenium-webdriver';
 import { isUrlAbsolute } from '../../utils/isAbsoluteUrl';
 import { Status } from '../helpers/constants';
 
