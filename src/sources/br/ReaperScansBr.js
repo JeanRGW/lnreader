@@ -130,7 +130,7 @@ const parseChapter = async (novelUrl, chapterUrl) => {
       console.log(chapterText);
       return chapterText;
        });
-    });
+    }),
 );
     
   const result = await fetch(url);
